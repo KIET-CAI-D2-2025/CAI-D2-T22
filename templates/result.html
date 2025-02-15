@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prediction Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .result {
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .hate {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .not-hate {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Prediction Result</h1>
+        <div class="result {% if prediction == 'Hate Speech' %}hate{% else %}not-hate{% endif %}">
+            {{ prediction }}
+        </div>
+        <a href="/">Analyze another tweet</a>
+    </div>
+</body>
+</html>
