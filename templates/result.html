@@ -5,12 +5,24 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 50px;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('./23831.png') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
         }
         .container {
             max-width: 600px;
             margin: 0 auto;
             text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 60px;
         }
         h1 {
             color: #333;
@@ -36,9 +48,56 @@
         a:hover {
             text-decoration: underline;
         }
+        footer {
+            text-align: end;
+            padding: 10px;
+            color: #ffffff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            border-top: none;
+            font-weight: bolder;
+            padding-right: 50px;
+        }
+        nav {
+            padding: 20px 20px;
+            padding-right: 50px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: none;
+            box-shadow: none;
+        }
+        .nav-logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffffff;
+            padding-left: 50px;
+        }
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
+    <nav>
+        <div class="nav-logo">Project Logo</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/team">Team Members</a>
+            <a href="/contact">Contact Us</a>
+        </div>
+    </nav>
     <div class="container">
         <h1>Prediction Result</h1>
         <div class="result {% if prediction == 'Hate Speech' %}hate{% else %}not-hate{% endif %}">
@@ -46,5 +105,8 @@
         </div>
         <a href="/">Analyze another tweet</a>
     </div>
+    <footer>
+        &copy; 2023 Twitter Hate Text Detection
+    </footer>
 </body>
 </html>

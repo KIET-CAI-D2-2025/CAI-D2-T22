@@ -9,7 +9,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 import joblib
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='templates', static_url_path='')
+
 
 # Initialize tokenizer
 tokenizer = TweetTokenizer(preserve_case=True)
