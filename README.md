@@ -20,7 +20,7 @@ The dataset contains:
 - `label`: 0 (Non-hate) or 1 (Hate speech).
 - `tweet`: The actual text content of the tweet.
 
-📥 **[Dataset Source](https://www.kaggle.com/datasets)** (Example, update with actual source if different)
+📥 **[Dataset Source](TwitterHate.csv)** (Example, update with actual source if different)
 
 ---
 
