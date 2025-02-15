@@ -29,13 +29,13 @@ def enhanced_preprocess(text):
     stop_words = stopwords.words('english')
     stop_words.extend(['amp','rt','u',"can't",'ur'] + aggressive_words)
     
-    # Enhanced text cleaning with hate speech patterns
+    # Enhanced text cleaning with hate Text patterns
     text = re.sub(r'@\w+', '', text)
     text = re.sub(r'http\S+', '', text)
     text = re.sub(r'[^\w\s]', '', text)
     text = re.sub(r'\d', '', text)
     
-    # Detect and emphasize hate speech patterns
+    # Detect and emphasize hate Text patterns
     hate_patterns = r'\b(kill|rape|murder|attack|hurt|harm|die|assault|beat|stab|shoot|threat|violence)\b'
     text = re.sub(hate_patterns, r'HATE_SPEECH_\1', text)
     

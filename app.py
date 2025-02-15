@@ -70,7 +70,7 @@ def predict():
         
         # Make prediction
         prediction = model.predict(text_vector)[0]
-        result = "Hate Speech" if prediction == 1 else "Not Hate Speech"
+        result = "Hate Text" if prediction == 1 else "Not Hate Text"
         
         return render_template('result.html', prediction=result)
 
