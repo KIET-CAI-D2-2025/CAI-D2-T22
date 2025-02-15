@@ -1,9 +1,9 @@
 # CAI-D2-T22
 
-# Hate Speech Detection on Twitter Using NLP and Machine Learning
+# Hate Text Detection on Twitter Using NLP and Machine Learning
 
 ## 📌 Project Overview
-This project aims to detect hate speech (racist or sexist content) on Twitter using **Natural Language Processing (NLP)** and **Machine Learning (ML)**. The model is trained to classify tweets as either **hate speech (1)** or **non-hate speech (0)** based on their textual content.
+This project aims to detect hate Text (racist or sexist content) on Twitter using **Natural Language Processing (NLP)** and **Machine Learning (ML)**. The model is trained to classify tweets as either **hate Text (1)** or **non-hate Text (0)** based on their textual content.
 
 ## 🛠️ Features
 - **Text Preprocessing**: Cleaning tweets by removing mentions, URLs, special characters, and stop words.
@@ -17,10 +17,10 @@ This project aims to detect hate speech (racist or sexist content) on Twitter us
 ## 📂 Dataset
 The dataset contains:
 - `id`: Unique identifier for each tweet.
-- `label`: 0 (Non-hate) or 1 (Hate speech).
+- `label`: 0 (Non-hate) or 1 (Hate Text).
 - `tweet`: The actual text content of the tweet.
 
-📥 **[Dataset Source](TwitterHate.csv)** (Example, update with actual source if different)
+📥 **[Dataset Source](TwitterHate.csv)**
 
 ---
 
@@ -30,8 +30,8 @@ Ensure you have **Python 3.x** installed.
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/your-username/hate-speech-detection.git
-cd hate-speech-detection
+git clone https://github.com/KIET-CAI-D2-2025/CAI-D2-T22.git
+cd CAI-D2-T22
 ```
 
 ### Install Dependencies
@@ -41,7 +41,8 @@ pip install -r requirements.txt
 
 ### Run the Project
 ```bash
-python main.py
+python save_model.py
+python app.py
 ```
 
 ---
@@ -65,7 +66,7 @@ python main.py
 
 ## 📊 Results & Performance
 - **Accuracy:** 90%+
-- **F1-score:** High recall and precision in detecting hate speech.
+- **F1-score:** High recall and precision in detecting hate Text.
 - **Scalability:** Optimized for processing large volumes of tweets in real-time.
 
 ---
