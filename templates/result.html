@@ -101,6 +101,11 @@
     <div class="container">
         <h1>Prediction Result</h1>
         <div class="result {% if prediction == 'Hate Text' %}hate{% else %}not-hate{% endif %}">
+            {% if warnings %}
+                <div class="alert">{{ warnings }}</div>
+            {% endif %}
+            <div class="marked-text">{{ marked_text|safe }}</div>
+
             {{ prediction }}
         </div>
         <a href="/">Analyze another tweet</a>

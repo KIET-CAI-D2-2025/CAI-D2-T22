@@ -58,6 +58,9 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    warnings = ""
+    marked_text = ""
+
     if request.method == 'POST':
         # Get input text
         text = request.form['text']
@@ -70,9 +73,16 @@ def predict():
         
         # Make prediction
         prediction = model.predict(text_vector)[0]
-        result = "Hate Text" if prediction == 1 else "Not Hate Text"
+        if prediction == 1:
+            result = "Hate Text"
+            marked_text = re.sub(r'\b(kill|rape|murder|attack|hurt|harm|die|assault|beat|stab|shoot|threat|violence)\b', r'<mark>\g<0></mark>', text)
+            warnings = "Warning: This tweet contains hate speech."
+        else:
+            result = "Not Hate Text"
+
         
-        return render_template('result.html', prediction=result)
+        return render_template('result.html', prediction=result, warnings=warnings, marked_text=marked_text)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

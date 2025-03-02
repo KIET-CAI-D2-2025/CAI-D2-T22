@@ -126,6 +126,8 @@
     <div class="container">
         <h1>Twitter Hate Text Detection</h1>
         <form id="analyzeForm" action="/predict" method="POST" onsubmit="showLoader()">
+            <div id="alert" style="color: red; display: none;"></div>
+
             <textarea name="text" placeholder="Enter tweet text here..." required></textarea>
             <button type="submit">Analyze</button>
         </form>
