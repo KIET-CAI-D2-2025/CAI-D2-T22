@@ -1,4 +1,9 @@
-from flask import Flask, request, render_template
+from fastapi import FastAPI, Request, Form
+from fastapi.staticfiles import StaticFiles
+
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
 import pandas as pd
 import numpy as np
 import re
@@ -9,7 +14,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 import joblib
 
-app = Flask(__name__, static_folder='templates', static_url_path='')
+app = FastAPI()
+app.mount("/images", StaticFiles(directory="templates/images"), name="images")
+
+templates = Jinja2Templates(directory="templates")
 
 
 # Initialize tokenizer
@@ -52,37 +60,31 @@ except:
     model = None
     vectorizer = None
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
-@app.route('/predict', methods=['POST'])
-def predict():
+@app.post("/predict", response_class=HTMLResponse)
+async def predict(request: Request, text: str = Form(...)):
     warnings = ""
     marked_text = ""
 
-    if request.method == 'POST':
-        # Get input text
-        text = request.form['text']
-        
-        # Preprocess text
-        processed_text = preprocess_text(text)
-        
-        # Vectorize text
-        text_vector = vectorizer.transform([processed_text])
-        
-        # Make prediction
-        prediction = model.predict(text_vector)[0]
-        if prediction == 1:
-            result = "Hate Text"
-            marked_text = re.sub(r'\b(kill|rape|murder|attack|hurt|harm|die|assault|beat|stab|shoot|threat|violence)\b', r'<mark>\g<0></mark>', text)
-            warnings = "Warning: This tweet contains hate speech."
-        else:
-            result = "Not Hate Text"
+    # Preprocess text
+    processed_text = preprocess_text(text)
 
-        
-        return render_template('result.html', prediction=result, warnings=warnings, marked_text=marked_text)
+    # Vectorize text
+    text_vector = vectorizer.transform([processed_text])
 
+    # Make prediction
+    prediction = model.predict(text_vector)[0]
+    if prediction == 1:
+        result = "Hate Text"
+        marked_text = re.sub(r'\b(kill|rape|murder|attack|hurt|harm|die|assault|beat|stab|shoot|threat|violence)\b', r'<mark>\g<0></mark>', text)
+        warnings = "Warning: This tweet contains hate speech."
+    else:
+        result = "Not Hate Text"
+
+    return templates.TemplateResponse("result.html", {"request": request, "prediction": result, "warnings": warnings, "marked_text": marked_text})
 
 if __name__ == '__main__':
     app.run(debug=True)
