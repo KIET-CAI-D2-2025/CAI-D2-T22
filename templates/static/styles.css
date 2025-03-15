@@ -1,0 +1,49 @@
+.hate-word {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+}
+
+.hate-word:hover {
+    background-color: #ff5252;
+    color: white;
+    transform: scale(1.1);
+}
+
+.hate-word::after {
+    content: '⚠️';
+    position: absolute;
+    top: -15px;
+    right: -10px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hate-word:hover::after {
+    opacity: 1;
+}
+
+.warning-text {
+    color: #c62828;
+    padding: 10px;
+    margin: 10px 0;
+    border-left: 4px solid #ff5252;
+    background-color: #ffebee;
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

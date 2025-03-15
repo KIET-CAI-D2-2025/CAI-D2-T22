@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.staticfiles import StaticFiles
+import logging
 
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -13,6 +14,10 @@ from nltk.tokenize import TweetTokenizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 import joblib
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 app.mount("/images", StaticFiles(directory="templates/images"), name="images")
@@ -56,9 +61,11 @@ def preprocess_text(text):
 try:
     model = joblib.load('logreg_model.pkl')
     vectorizer = joblib.load('tfidf_vectorizer.pkl')
-except:
+    logger.info("Model and vectorizer loaded successfully.")
+except Exception as e:
     model = None
     vectorizer = None
+    logger.error(f"Error loading model or vectorizer: {e}")
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -66,6 +73,9 @@ async def home(request: Request):
 
 @app.post("/predict", response_class=HTMLResponse)
 async def predict(request: Request, text: str = Form(...)):
+    if model is None or vectorizer is None:
+        raise HTTPException(status_code=500, detail="Model or vectorizer not loaded properly.")
+    
     warnings = ""
     marked_text = ""
 
@@ -73,7 +83,11 @@ async def predict(request: Request, text: str = Form(...)):
     processed_text = preprocess_text(text)
 
     # Vectorize text
-    text_vector = vectorizer.transform([processed_text])
+    try:
+        text_vector = vectorizer.transform([processed_text])
+    except Exception as e:
+        logger.error(f"Error transforming text: {e}")
+        raise HTTPException(status_code=500, detail="Error transforming text.")
 
     # Make prediction
     prediction = model.predict(text_vector)[0]
@@ -85,6 +99,27 @@ async def predict(request: Request, text: str = Form(...)):
         result = "Not Hate Text"
 
     return templates.TemplateResponse("result.html", {"request": request, "prediction": result, "warnings": warnings, "marked_text": marked_text})
+
+@app.post("/retrain", response_class=HTMLResponse)
+async def retrain(request: Request):
+    # Load your dataset
+    df = pd.read_csv('your_dataset.csv')  # Replace with your dataset path
+    df['processed_text'] = df['text'].apply(preprocess_text)
+
+    # Vectorize the text
+    vectorizer = TfidfVectorizer(max_features=5000)
+    X = vectorizer.fit_transform(df['processed_text'])
+    y = df['label']  # Replace with your label column
+
+    # Train the model
+    model = LogisticRegression()
+    model.fit(X, y)
+
+    # Save the model and vectorizer
+    joblib.dump(model, 'logreg_model.pkl')
+    joblib.dump(vectorizer, 'tfidf_vectorizer.pkl')
+
+    return templates.TemplateResponse("retrain.html", {"request": request, "message": "Model retrained and saved successfully."})
 
 if __name__ == '__main__':
     app.run(debug=True)
