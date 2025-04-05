@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Twitter Hate Text Classifier</title>
+    <title>Twitter Hate Speech Classifier</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -12,7 +12,7 @@
         <div class="nav-container">
             <div class="logo-nav">
                 <i class="fab fa-twitter"></i>
-                <span class="site-title">Twitter Hate Text Detector</span>
+                <span class="site-title">Twitter Hate Speech Detector</span>
             </div>
             <div class="mobile-menu-toggle" id="mobile-menu-toggle">
                 <i class="fas fa-bars"></i>
@@ -30,10 +30,10 @@
         <header>
             <div class="logo">
                 <i class="fab fa-twitter"></i>
-                <h1>Twitter Hate Text Detector</h1>
+                <h1>Twitter Hate Speech Detector</h1>
             </div>
             <div class="header-subtitle">
-                <p>Detect and analyze harmful content with ML Logistic Regression Model</p>
+                <p>Detect and analyze harmful content with AI technology</p>
             </div>
         </header>
         
@@ -45,7 +45,7 @@
             {% else %}
             <div class="info-card">
                 <h2><i class="fas fa-info-circle"></i> About this tool</h2>
-                <p>This application uses machine learning to analyze text and detect potential hate text. Simply enter a tweet or text message in the box below to analyze it.</p>
+                <p>This application uses machine learning to analyze text and detect potential hate speech. Simply enter a tweet or text message in the box below to analyze it.</p>
                 <div class="info-features">
                     <div class="feature">
                         <i class="fas fa-bolt"></i>
@@ -81,7 +81,7 @@
                     <div id="alert-container" class="hidden">
                         <div class="alert" id="hate-speech-alert">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <span>Hate Text detected! This content may be harmful.</span>
+                            <span>Hate speech detected! This content may be harmful.</span>
                         </div>
                     </div>
                     <div class="result-content">
@@ -89,10 +89,23 @@
                             <p id="analyzed-text"></p>
                         </div>
                         <div class="result-details">
+                            <div class="gauge-container">
+                                <div class="gauge">
+                                    <div class="gauge-fill" id="gauge-fill"></div>
+                                </div>
+                                <div class="gauge-percentage" id="gauge-percentage">0%</div>
+                            </div>
                             <div class="result-label" id="result-label"></div>
                             <div class="aggressive-words" id="aggressive-words-container">
                                 <h4>Aggressive Words Found: <span id="aggressive-count">0</span></h4>
                                 <ul id="aggressive-words-list"></ul>
+                                <div class="severity-meter">
+                                    <div class="severity-label">Severity:</div>
+                                    <div class="severity-bar">
+                                        <div class="severity-fill" id="severity-fill"></div>
+                                    </div>
+                                    <div class="severity-percentage" id="severity-percentage">0%</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -106,7 +119,7 @@
         </main>
         
         <footer>
-            <p>&copy; 2025 Twitter Hate Text Detector | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            <p>&copy; 2025 Twitter Hate Speech Detector | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
             <div class="social-links">
                 <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                 <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>

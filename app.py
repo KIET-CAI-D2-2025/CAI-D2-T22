@@ -104,107 +104,68 @@ AGGRESSIVE_WORDS = {
     'crap': 5,
 }
 
-from textblob import TextBlob
-
 def identify_aggressive_words(text):
     """
-    Identify aggressive words/phrases in context and return analysis including:
-    - List of identified aggressive terms
-    - Context severity score
-    - Highlighted text
-    - Sentiment analysis
+    Identify aggressive words in the text and return a dictionary with:
+    - List of identified aggressive words
+    - Severity score
+    - Highlighted text with aggressive words marked
     """
-    # Analyze sentiment
-    sentiment = TextBlob(text).sentiment
-    
-    # Check for negation patterns
-    negated = any(re.search(r'\b(not|no|never)\b', text.lower()) for word in AGGRESSIVE_WORDS)
-    
-    # Find aggressive words and phrases
     text_lower = text.lower()
     words = re.findall(r'\b\w+\b', text_lower)
-    aggressive_found = []
     
-    # Check for multi-word phrases
-    for phrase in AGGRESSIVE_PHRASES:
-        if phrase in text_lower:
-            aggressive_found.append(phrase)
+    # Find aggressive words
+    aggressive_found = [word for word in words if word in AGGRESSIVE_WORDS]
     
-    # Check single words
-    aggressive_found += [word for word in words if word in AGGRESSIVE_WORDS]
-    
-    # Calculate context-aware severity
+    # Calculate severity score (0-100)
     severity = 0
     if aggressive_found:
-        # Base score from words
-        total_weight = sum(AGGRESSIVE_WORDS.get(word, 0) for word in aggressive_found)
-        
-        # Adjust for sentiment
-        sentiment_factor = max(0, -sentiment.polarity)  # More negative = more severe
-        total_weight *= (1 + sentiment_factor)
-        
-        # Reduce for negation
-        if negated:
-            total_weight *= 0.3
-            
-        # Normalize to 0-100
-        max_possible = 10 * len(words)
+        # Sum the scores of all found aggressive words and normalize to 0-100
+        total_weight = sum(AGGRESSIVE_WORDS[word] for word in aggressive_found)
+        max_possible = 10 * len(words)  # Maximum possible severity
         severity = min(100, int((total_weight / max_possible) * 100))
     
-    # Highlight aggressive content
+    # Create highlighted text
     highlighted_text = text
-    for term in set(aggressive_found):
-        pattern = re.compile(rf'\b{term}\b', re.IGNORECASE)
-        highlighted_text = pattern.sub(f'<span class="highlight">{term}</span>', highlighted_text)
+    for word in set(aggressive_found):
+        pattern = re.compile(rf'\b{word}\b', re.IGNORECASE)
+        highlighted_text = pattern.sub(f'<span class="highlight">{word}</span>', highlighted_text)
     
     return {
-        'aggressive_terms': aggressive_found,
+        'aggressive_words': aggressive_found,
         'severity': severity,
         'highlighted_text': highlighted_text,
-        'count': len(aggressive_found),
-        'sentiment': {
-            'polarity': sentiment.polarity,
-            'subjectivity': sentiment.subjectivity
-        },
-        'negated': negated
+        'count': len(aggressive_found)
     }
-
-# Add phrase patterns to aggressive terms
-AGGRESSIVE_PHRASES = {
-    'go die': 12,
-    'kill yourself': 15,
-    'i hate you': 10,
-    'you suck': 8,
-    'piece of shit': 12,
-    'fuck off': 10,
-    'burn in hell': 14
-}
 
 # Function to predict hate speech on new data
 def predict_hate_speech(text, model, vectorizer):
     """
-    Predict whether new text contains hate speech using:
-    - Model prediction
-    - Context analysis
-    - Sentiment analysis
+    Predict whether new text contains hate speech
     
+    Parameters:
+    -----------
+    text : str or list of str
+        New text to classify
+    model : trained classifier
+        The trained model to use for prediction
+    vectorizer : fitted TfidfVectorizer
+        The vectorizer used to transform text to features
+        
     Returns:
     --------
     predictions : array
         Array of predictions (0: not hate speech, 1: hate speech)
-    proba : array
-        Probability estimates
-    analysis : dict
-        Detailed context analysis
     """
+    # Preprocess the text
     if isinstance(text, str):
         text = [text]
     
     processed_text = []
-    original_text = text[0]
+    original_text = text[0]  # Store original for aggressive word analysis
     
-    # Context-aware preprocessing
     for t in text:
+        # Apply same preprocessing steps
         t = simplify(t)
         t = re.sub(r'@\w+', '', t)
         t = re.sub(r'http\S+', '', t)
@@ -216,21 +177,17 @@ def predict_hate_speech(text, model, vectorizer):
         tokens = rem_nonalpha(tokens)
         processed_text.append(' '.join(tokens))
     
-    # Get model prediction
+    # Transform text to feature vectors
     X = vectorizer.transform(processed_text)
+    
+    # Make prediction
     predictions = model.predict(X)
     proba = model.predict_proba(X)
     
-    # Enhanced context analysis
-    analysis = identify_aggressive_words(original_text)
+    # Add aggressive word analysis
+    aggressive_analysis = identify_aggressive_words(original_text)
     
-    # Override model prediction if context suggests strong hate
-    if analysis['severity'] > 80 and predictions[0] == 0:
-        predictions[0] = 1  # Mark as hate speech
-    elif analysis['negated'] and predictions[0] == 1:
-        predictions[0] = 0  # Mark as non-hate if negated
-    
-    return predictions, proba, analysis
+    return predictions, proba, aggressive_analysis
 
 # Load or train the model
 def load_or_train_model():
@@ -323,6 +280,8 @@ def statistics():
     return render_template('statistics.html')
 
 @app.route('/predict', methods=['POST'])
+
+
 def predict():
     if request.method == 'POST':
         if model is None or vectorizer is None:
@@ -331,15 +290,15 @@ def predict():
         text = request.form['tweet']
         predictions, probabilities, aggressive_analysis = predict_hate_speech([text], model, vectorizer)
         
-        # Remove severity from the response
         result = {
             'prediction': int(predictions[0]),
+            'probability': float(probabilities[0][1]),
             'is_hate_speech': bool(predictions[0] == 1),
             'processed_text': text,
-            'aggressive_words': aggressive_analysis['aggressive_terms'],
+            'aggressive_words': aggressive_analysis['aggressive_words'],
             'aggressive_count': aggressive_analysis['count'],
-            'highlighted_text': aggressive_analysis['highlighted_text'],
-            'sentiment': aggressive_analysis['sentiment']
+            'severity': aggressive_analysis['severity'],
+            'highlighted_text': aggressive_analysis['highlighted_text']
         }
         
         return jsonify(result)

@@ -4,11 +4,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultCard = document.getElementById('result-card');
     const loader = document.getElementById('loader');
     const analyzedText = document.getElementById('analyzed-text');
+    const gaugeFill = document.getElementById('gauge-fill');
+    const gaugePercentage = document.getElementById('gauge-percentage');
     const resultLabel = document.getElementById('result-label');
     const alertContainer = document.getElementById('alert-container');
     const aggressiveWordsContainer = document.getElementById('aggressive-words-container');
     const aggressiveWordsList = document.getElementById('aggressive-words-list');
     const aggressiveCount = document.getElementById('aggressive-count');
+    const severityFill = document.getElementById('severity-fill');
+    const severityPercentage = document.getElementById('severity-percentage');
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const navLinks = document.getElementById('nav-links');
 
@@ -122,7 +126,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     navLinkItems.forEach(link => {
         const linkPath = link.getAttribute('href');
-        if (currentPage === linkPath || (currentPage === '/' && linkPath.includes('home'))) {
+        if (currentPage === linkPath || 
+            (currentPage === '/' && linkPath.includes('home'))) {
             link.classList.add('active');
         } else {
             link.classList.remove('active');
@@ -161,16 +166,21 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update result card with prediction
             analyzedText.innerHTML = result.highlighted_text; // Use highlighted text from server
             
+            // Update gauge
+            const percentage = Math.round(result.probability * 100);
+            gaugeFill.style.height = `${percentage}%`;
+            gaugePercentage.textContent = `${percentage}%`;
+            
             // Update result label
             if (result.is_hate_speech) {
-                resultLabel.textContent = 'Hate Text';
+                resultLabel.textContent = 'Hate Speech Detected';
                 resultLabel.className = 'result-label hate-speech';
                 
                 // Show alert for hate speech
                 alertContainer.classList.remove('hidden');
                 alertContainer.classList.add('visible');
             } else {
-                resultLabel.textContent = 'Not Hate Text';
+                resultLabel.textContent = 'Not Hate Speech';
                 resultLabel.className = 'result-label not-hate-speech';
                 
                 // Hide alert for non-hate speech
@@ -189,6 +199,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     li.textContent = word;
                     aggressiveWordsList.appendChild(li);
                 });
+                
+                // Update severity meter
+                severityFill.style.width = `${result.severity}%`;
+                severityPercentage.textContent = `${result.severity}%`;
+                
+                // Set different colors based on severity
+                if (result.severity < 30) {
+                    severityFill.style.backgroundColor = 'var(--success-color)';
+                } else if (result.severity < 70) {
+                    severityFill.style.backgroundColor = 'var(--warning-color)';
+                } else {
+                    severityFill.style.backgroundColor = 'var(--error-color)';
+                }
                 
                 // Show aggressive words container
                 aggressiveWordsContainer.classList.remove('hidden');
