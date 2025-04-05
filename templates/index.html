@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Hate Text Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-nav">
+                <i class="fab fa-twitter"></i>
+                <span class="site-title">Twitter Hate Text Detector</span>
+            </div>
+            <div class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="{{ url_for('home') }}"><i class="fas fa-home"></i><span>Home</span></a></li>
+                <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i><span>About</span></a></li>
+                <li><a href="{{ url_for('statistics') }}"><i class="fas fa-chart-bar"></i><span>Statistics</span></a></li>
+                <li><a href="{{ url_for('help') }}"><i class="fas fa-question-circle"></i><span>Help</span></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fab fa-twitter"></i>
+                <h1>Twitter Hate Text Detector</h1>
+            </div>
+            <div class="header-subtitle">
+                <p>Detect and analyze harmful content with ML Logistic Regression Model</p>
+            </div>
+        </header>
+        
+        <main>
+            {% if error %}
+            <div class="error-message">
+                <p>{{ error }}</p>
+            </div>
+            {% else %}
+            <div class="info-card">
+                <h2><i class="fas fa-info-circle"></i> About this tool</h2>
+                <p>This application uses machine learning to analyze text and detect potential hate text. Simply enter a tweet or text message in the box below to analyze it.</p>
+                <div class="info-features">
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>Fast Analysis</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Accurate Detection</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Detailed Results</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <form id="prediction-form">
+                    <textarea id="tweet-input" name="tweet" placeholder="Enter text to analyze..." required></textarea>
+                    <div class="form-footer">
+                        <p class="input-tip"><i class="fas fa-lightbulb"></i> Tip: Press Ctrl+Enter to analyze</p>
+                        <button type="submit" id="analyze-btn">
+                            <span>Analyze</span>
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="result-section" id="result-container">
+                <div class="result-card hidden" id="result-card">
+                    <h3><i class="fas fa-clipboard-check"></i> Analysis Result</h3>
+                    <div id="alert-container" class="hidden">
+                        <div class="alert" id="hate-speech-alert">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Hate Text detected! This content may be harmful.</span>
+                        </div>
+                    </div>
+                    <div class="result-content">
+                        <div class="result-text">
+                            <p id="analyzed-text"></p>
+                        </div>
+                        <div class="result-details">
+                            <div class="result-label" id="result-label"></div>
+                            <div class="aggressive-words" id="aggressive-words-container">
+                                <h4>Aggressive Words Found: <span id="aggressive-count">0</span></h4>
+                                <ul id="aggressive-words-list"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="loader hidden" id="loader">
+                    <div class="spinner"></div>
+                    <p>Analyzing...</p>
+                </div>
+            </div>
+            {% endif %}
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 Twitter Hate Text Detector | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            <div class="social-links">
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
