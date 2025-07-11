@@ -100,8 +100,6 @@ git push origin feature-branch
 
 ## 📧 Contact
 For any inquiries, reach out via:
-- 📩 Email: venkysss47@gmail.com
-- 🔗 LinkedIn: [venky1710](https://www.linkedin.com/in/venky1710)
-- 🐦 portfolio: [venky8086.netlify.app](https://venky8086.netlify.app)
+- 📩 Email: arjunnadipalli@gmail.com
 
 ### ⭐ If you found this project useful, give it a **star**! ⭐
